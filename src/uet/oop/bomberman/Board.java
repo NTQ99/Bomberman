@@ -174,6 +174,21 @@ public class Board implements IRender {
 		return null;
 	}
 
+	public Character getCharacterAt(double x, double y) {
+		Iterator itr = this._characters.iterator();
+
+		Character cur;
+		do {
+			if (!itr.hasNext()) {
+				return null;
+			}
+
+			cur = (Character) itr.next();
+		} while((double)cur.getXTile() != x || (double)cur.getYTile() != y);
+
+		return cur;
+	}
+
 	public Bomber getBomber() {
 		Iterator<Character> itr = _characters.iterator();
 		
