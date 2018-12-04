@@ -2,7 +2,9 @@ package uet.oop.bomberman.entities.character;
 
 import uet.oop.bomberman.Board;
 import uet.oop.bomberman.Game;
+import uet.oop.bomberman.audio.MyAudioPlayer;
 import uet.oop.bomberman.entities.Entity;
+import uet.oop.bomberman.entities.Message;
 import uet.oop.bomberman.entities.bomb.Bomb;
 import uet.oop.bomberman.entities.bomb.Flame;
 import uet.oop.bomberman.entities.character.enemy.Enemy;
@@ -11,6 +13,7 @@ import uet.oop.bomberman.graphics.Sprite;
 import uet.oop.bomberman.input.Keyboard;
 import uet.oop.bomberman.level.Coordinates;
 
+import java.awt.*;
 import java.util.Iterator;
 import java.util.List;
 
@@ -92,6 +95,10 @@ public class Bomber extends Character {
         // thực hiện tạo đối tượng bom, đặt vào vị trí (x, y)
         Bomb b = new Bomb(x, y, _board);
         _board.addBomb(b);
+
+        // Phát âm thanh
+        MyAudioPlayer placeSound = new MyAudioPlayer(MyAudioPlayer.PLACE_BOMB);
+        placeSound.play();
     }
 
     private void clearBombs() {
@@ -112,13 +119,28 @@ public class Bomber extends Character {
     public void kill() {
         if (!_alive) return;
         _alive = false;
+
+        _board.addLives(-1);
+
+        Message msg = new Message("-1 LIVE", getXMessage(), getYMessage(), 2, Color.white, 14);
+        _board.addMessage(msg);
+
+        _board.getMusicPlayer().stop();
+
+        MyAudioPlayer deadAudio = new MyAudioPlayer(MyAudioPlayer.DEAD);
+        deadAudio.play();
     }
 
     @Override
     protected void afterKill() {
         if (_timeAfter > 0) --_timeAfter;
         else {
-            _board.endGame();
+            if(_bombs.size() == 0) {
+                if(_board.getLives() == 0)
+                    _board.endGame();
+                else
+                    _board.restartLevel();
+            }
         }
     }
 

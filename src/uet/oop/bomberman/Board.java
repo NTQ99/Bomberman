@@ -1,5 +1,6 @@
 package uet.oop.bomberman;
 
+import uet.oop.bomberman.audio.MyAudioPlayer;
 import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.entities.Message;
 import uet.oop.bomberman.entities.bomb.Bomb;
@@ -26,6 +27,8 @@ public class Board implements IRender {
 	protected Game _game;
 	protected Keyboard _input;
 	protected Screen _screen;
+
+	private MyAudioPlayer _musicPlayer;
 	
 	public Entity[] _entities;
 	public List<Character> _characters = new ArrayList<>();
@@ -36,11 +39,14 @@ public class Board implements IRender {
 	
 	private int _time = Game.TIME;
 	private int _points = Game.POINTS;
+	private int _lives = Game.LIVES;
 	
 	public Board(Game game, Keyboard input, Screen screen) {
 		_game = game;
 		_input = input;
 		_screen = screen;
+		_musicPlayer = new MyAudioPlayer(MyAudioPlayer.BACKGROUND_MUSIC);
+		_musicPlayer.loop();
 		
 		loadLevel(1); //start in level 1
 	}
@@ -81,7 +87,20 @@ public class Board implements IRender {
 		renderCharacter(screen);
 		
 	}
-	
+
+	private void resetProperties() {
+		_points = Game.POINTS;
+		_lives = Game.LIVES;
+
+		_game.bomberSpeed = 1.0;
+		_game.bombRadius = 1;
+		_game.bombRate = 1;
+	}
+
+	public void restartLevel() {
+		loadLevel(_levelLoader.getLevel());
+	}
+
 	public void nextLevel() {
 		loadLevel(_levelLoader.getLevel() + 1);
 	}
@@ -327,12 +346,28 @@ public class Board implements IRender {
 			return this._time--;
 	}
 
+	public MyAudioPlayer getMusicPlayer() {
+		return _musicPlayer;
+	}
+
+	public void setMusicPlayer(MyAudioPlayer _musicPlayer) {
+		this._musicPlayer = _musicPlayer;
+	}
+
 	public Keyboard getInput() {
 		return _input;
 	}
 
 	public LevelLoader getLevel() {
 		return _levelLoader;
+	}
+
+	public int getLives() {
+		return _lives;
+	}
+
+	public void addLives(int lives) {
+		this._lives += lives;
 	}
 
 	public Game getGame() {

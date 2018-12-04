@@ -2,6 +2,7 @@ package uet.oop.bomberman.entities.bomb;
 
 import uet.oop.bomberman.Board;
 import uet.oop.bomberman.Game;
+import uet.oop.bomberman.audio.MyAudioPlayer;
 import uet.oop.bomberman.entities.AnimatedEntitiy;
 import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.entities.character.Bomber;
@@ -91,6 +92,9 @@ public class Bomb extends AnimatedEntitiy {
 		for (int i = 0; i < _flames.length; i++) {
 			_flames[i] = new Flame((int)_x, (int)_y, i, Game.getBombRadius(), _board);
 		}
+
+		MyAudioPlayer explodeAudio = new MyAudioPlayer(MyAudioPlayer.EXPLOSION);
+		explodeAudio.play();
 	}
 	
 	public FlameSegment flameAt(int x, int y) {
